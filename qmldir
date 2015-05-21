@@ -1,0 +1,3 @@
+module SharedComponents
+Panel 1.0 Panel.qml
+PanelContainer 1.0 PanelContainer.qml
