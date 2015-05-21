@@ -8,6 +8,7 @@ DropArea {
     property var edgePosition;
     property string layout: "row";
     property var panels: [];
+    property bool movable: true
 
     property var edgeTop;
     property var edgeBottom;

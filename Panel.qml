@@ -42,7 +42,7 @@ Item {
 
             width: parent.width - moveAreaSize
             height: moveAreaSize
-            drag.target: root
+            drag.target: (container.movable)?root:null
 
             function percentInRect(thisPanel, rect) {
 
@@ -118,6 +118,8 @@ Item {
             }
 
             onPositionChanged: {
+                if (!container.movable) return;
+
                 container.curPosition = Qt.point(root.x, root.y);
                 var position = whichPosition(root, container);
 
