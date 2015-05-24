@@ -23,6 +23,7 @@ Item {
     property bool isLast: false;
 
     property var innerObject: null;
+    property alias color: panel.color
 
     Rectangle {
         anchors.fill: parent

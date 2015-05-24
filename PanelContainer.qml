@@ -34,19 +34,6 @@ DropArea {
         calculatePositions();
     }
 
-    function finishCreation(component, params) {
-        if (component.status === Component.Ready) {
-            var panel = component.createObject(panelContainer, params);
-            if (panel === null) {
-                // Error Handling
-                console.log("Error creating object");
-            }
-        } else if (component.status === Component.Error) {
-            // Error Handling
-            console.log("Error loading component:", component.errorString());
-        }
-    }
-
     function calculatePositions() {
 
         if (!panels)return;
@@ -65,7 +52,7 @@ DropArea {
             {
                 component = Qt.createComponent("Panel.qml");
                 if (component.status === Component.Ready) {
-                    panels[i].object = component.createObject(panelContainer, {"name": panels[i].name});
+                    panels[i].object = component.createObject(panelContainer, panels[i]);
                     if (panels[i].object) {
                         console.log("Object created: " + panels[i].object.name);
                     }
