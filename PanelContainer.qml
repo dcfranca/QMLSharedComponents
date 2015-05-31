@@ -7,7 +7,7 @@ DropArea {
     property point curPosition;
     property var edgePosition;
     property string layout: "row";
-    property var panels: [];
+    property var panelsMetaData: [];
     property bool movable: true
 
     property var edgeTop;
@@ -36,25 +36,25 @@ DropArea {
 
     function calculatePositions() {
 
-        if (!panels)return;
+        if (!panelsMetaData)return;
 
-        var lastPanel = panels.length - 1;
+        var lastPanel = panelsMetaData.length - 1;
         var sumWidth = 0;
         var sumHeight = 0;
 
         console.log("calculatePositions - begin")
 
-        for (var i=0; i < panels.length; i++) {
+        for (var i=0; i < panelsMetaData.length; i++) {
             console.log("Creating panel: " + i)
             var component;
 
-            if ( !panels[i].object )
+            if ( !panelsMetaData[i].object )
             {
                 component = Qt.createComponent("Panel.qml");
                 if (component.status === Component.Ready) {
-                    panels[i].object = component.createObject(panelContainer, panels[i]);
-                    if (panels[i].object) {
-                        console.log("Object created: " + panels[i].object.name);
+                    panelsMetaData[i].object = component.createObject(panelContainer, panelsMetaData[i]);
+                    if (panelsMetaData[i].object) {
+                        console.log("Object created: " + panelsMetaData[i].object.name);
                     }
                     else {
                         console.log("Error creating object");
@@ -65,10 +65,10 @@ DropArea {
                 }
             }
 
-            if (panels[i].object) {
+            if (panelsMetaData[i].object) {
 
-                var params = panels[i];
-                var panel = panels[i].object;
+                var params = panelsMetaData[i];
+                var panel = panelsMetaData[i].object;
                 panel.index = i;
 
                 if (i == 0)
@@ -108,12 +108,12 @@ DropArea {
                     }
                 }
 
-                if (!panels[i].innerObject && panels[i].qml) {
-                    var innerComponent = Qt.createComponent(panels[i].qml);
+                if (!panelsMetaData[i].innerObject && panelsMetaData[i].qml) {
+                    var innerComponent = Qt.createComponent(panelsMetaData[i].qml);
                     if (innerComponent.status === Component.Ready) {
-                        panels[i].innerObject = innerComponent.createObject(panels[i].object);
-                        if (panels[i]) {
-                            console.log("InnerObject created to: " + panels[i].object.name);
+                        panelsMetaData[i].innerObject = innerComponent.createObject(panelsMetaData[i].object);
+                        if (panelsMetaData[i]) {
+                            console.log("InnerObject created to: " + panelsMetaData[i].object.name);
                         }
                         else {
                             console.log("Error creating innerObject");
@@ -124,19 +124,19 @@ DropArea {
                     }
                 }
 
-                panels[i].innerObject.x = panels[i].object.borderSize;
-                panels[i].innerObject.y = panels[i].object.borderSize;
-                panels[i].innerObject.width = panels[i].object.width - (panels[i].object.borderSize * 2);
-                panels[i].innerObject.height = panels[i].object.height - (panels[i].object.borderSize * 2);
+                panelsMetaData[i].innerObject.x = panelsMetaData[i].object.borderSize;
+                panelsMetaData[i].innerObject.y = panelsMetaData[i].object.borderSize;
+                panelsMetaData[i].innerObject.width = panelsMetaData[i].object.width - (panelsMetaData[i].object.borderSize * 2);
+                panelsMetaData[i].innerObject.height = panelsMetaData[i].object.height - (panelsMetaData[i].object.borderSize * 2);
 
-                panels[i].object.innerObject = panels[i].innerObject;
+                panelsMetaData[i].object.innerObject = panelsMetaData[i].innerObject;
             }
         }
     }
 
     function adjustSidePanel(panel, side, moveX, moveY) {
         if (side === "prev") {
-            var prevPanel = panels[panel.index - 1];
+            var prevPanel = panelsMetaData[panel.index - 1];
 
             if (prevPanel.object.width + moveX < prevPanel.object.minimumWidth)
                 return false;
@@ -154,7 +154,7 @@ DropArea {
 
         }
         else if (side === "next"){
-            var nextPanel = panels[panel.index + 1];
+            var nextPanel = panelsMetaData[panel.index + 1];
 
             if (nextPanel.object.width - moveX < nextPanel.object.minimumWidth)
                 return false;
@@ -199,12 +199,12 @@ DropArea {
 
         var index = -1;
         var metaPanel;
-        for (var i=0; i<panels.length; i++){
-            console.log("Panel name at " + i + ": " + panels[i].name)
+        for (var i=0; i<panelsMetaData.length; i++){
+            console.log("Panel name at " + i + ": " + panelsMetaData[i].name)
             console.log("Cur Panel: " + curPanel.name)
-            if (panels[i].name === curPanel.name) {
+            if (panelsMetaData[i].name === curPanel.name) {
                 index = i;
-                metaPanel = panels[i];
+                metaPanel = panelsMetaData[i];
                 break;
             }
         }
@@ -213,14 +213,14 @@ DropArea {
 
         if (position.pos === "TOP" || position.pos === "LEFT") {
             if (index > -1) {
-                panels.splice(index, 1);
-                panels.splice(0, 0, metaPanel);
+                panelsMetaData.splice(index, 1);
+                panelsMetaData.splice(0, 0, metaPanel);
             }
         }
         else {
             if (index > -1) {
-                panels.splice(index, 1);
-                panels.push(metaPanel);
+                panelsMetaData.splice(index, 1);
+                panelsMetaData.push(metaPanel);
             }
         }
 
